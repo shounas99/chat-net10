@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace EDChat.Api.Middlewares;
+namespace CrisChat.Api.Middlewares;
 
 public class RequestLoggingMiddleware(ILogger<RequestLoggingMiddleware> logger) : IMiddleware
 {

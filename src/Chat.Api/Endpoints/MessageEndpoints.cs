@@ -1,8 +1,9 @@
 using CrisChat.Api.Services;
+using CrisChat.Api.Mappers;
+using CrisChat.Api.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CrisChat.Api.Endpoints;
-using CrisChat.Api.Models;
 
 public static class MessageEndpoints
 {
@@ -10,15 +11,19 @@ public static class MessageEndpoints
     {
         var group = app.MapGroup("/api/rooms/{roomId:int}/messages");
 
-        group.MapGet("/", (int roomId, ChatStore store) =>
-            TypedResults.Ok(store.GetMessagesByRoom(roomId))
-        );
-        group.MapPost("/", (int roomId, Message message, ChatStore store) =>
+        group.MapGet("/", async (int roomId, ChatStore store) =>
+           TypedResults.Ok(( store.GetMessagesByRoom(roomId)).Select(m => m.ToDto())))
+           .WithName("GetRoomMessages")
+           .WithSummary("Obtiene los mensajes de una sala");
+
+        group.MapPost("/", (int roomId, CreateMessageDTO dto, ChatStore store) =>
         {
-            message.RoomId = roomId;
+            var message = dto.toEntity(roomId);
             store.CreateMessage(message);
-            return TypedResults.Created($"/api/rooms/{roomId}/messages/{message.Id}", message);
-        });
+            return TypedResults.Created($"/api/rooms/{roomId}/messages/{message.Id}", message.toDto());
+        })
+            .WithName("Created")
+            .WithSummary("Envia un mensaje a una sala.");
         return group;
     }
 }
