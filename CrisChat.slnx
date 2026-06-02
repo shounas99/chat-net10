@@ -1,5 +1,7 @@
 <Solution>
-  <Folder Name="/src/" />
+  <Folder Name="/src/">
+    <Project Path="src/CrisChat.Web/CrisChat.Web.csproj" />
+  </Folder>
   <Folder Name="/src/Chat.Api/">
     <Project Path="src/Chat.Api/CrisChat.Api.csproj" />
   </Folder>
